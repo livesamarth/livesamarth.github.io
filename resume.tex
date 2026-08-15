@@ -1,0 +1,260 @@
+\documentclass[]{deedy-resume-openfont}
+
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\usepackage{blindtext}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlist[itemize]{leftmargin=*}
+
+% new commands
+
+\newcommand{\cvsect}[1]{% The only parameter is the section text
+	\vspace{1pt} % Whitespace before the section title
+	\colorbox{subheadings}{\textcolor{white}{\MakeUppercase{\textbf{#1}}}}% Section title
+}
+
+\newcommand{\ExternalLink}{%
+    \tikz[x=1.2ex, y=1.2ex, baseline=-0.05ex]{% 
+        \begin{scope}[x=1ex, y=1ex]
+            \clip (-0.1,-0.1) 
+                --++ (-0, 1.2) 
+                --++ (0.6, 0) 
+                --++ (0, -0.6) 
+                --++ (0.6, 0) 
+                --++ (0, -1);
+            \path[draw, 
+                line width = 0.7, 
+                rounded corners=0.7] 
+                (0,0) rectangle (1,1);
+        \end{scope}
+        \path[draw, line width = 0.7] (0.5, 0.5) 
+            -- (1, 1);
+        \path[draw, line width = 0.7] (0.6, 1) 
+            -- (1, 1) -- (1, 0.6);
+        }
+    }
+
+\newcommand{\resumeSubheading}[2]{
+    \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+    {#1} & #2 \\
+    \end{tabular*}\vspace{-10pt}
+}
+
+\newcommand{\resumeHeading}[4]{\runsubsection{\uppercase{#1}}\descript{| #2}\hfill\location{#3 | #4}}
+
+\newcommand{\Project}[2]{
+\runsubsection{%
+\href{#2}{\uppercase{#1} \,\ExternalLink}
+}
+    \hfill
+}
+
+\newcommand{\projectHeading}[3]{\Project{#1}{#2}
+\descript{#3}\\}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     TITLE NAME
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\namesection{Samarth Gupta}{}{
+\href{https://www.linkedin.com/in/livesamarthgupta/}{linkedIn://livesamarthgupta  } |
+\href{mailto:livesamarthgupta@gmail.com}{  livesamarthgupta@gmail.com  } |
+\href{tel:8081081399}{  +91-8081081399}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     EXPERIENCE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Experience}
+
+\resumeHeading{Target}{Senior Engineer}{Bengaluru, India}{June 2024 - Present}
+\begin{tightemize}
+\item \textcolor{subheadings}{Spearheaded a \textbf{high-impact} initiative to design, architect, and build a scalable Loyalty Partnership Platform enabling third-party account linking and real-time evergreen offer activations across Target and Partner ecosystems; collaborated cross functionally to define product goals and technical requirements, implemented production-ready systems from scratch, and laid the foundation for enhancing Circle 360 membership value with projected \textbf{gains in customer acquisition and revenue growth}.}
+\item \textcolor{subheadings}{Owned a critical customer-facing External Partner Integration (EPI) system powering Target’s third-party loyalty offers, strengthening reliability, observability, and partner integrations to support SLA-driven offer fulfillment.}
+\item \textcolor{subheadings}{Designed APIs \& schemas for Target Weekly Ads, establishing backend foundations for scalable ad-content management.}
+\item \textcolor{subheadings}{\textbf{Enhanced observability} through OpenTelemetry auto-instrumentation, enabling distributed tracing across microservices.}
+% \item \textcolor{subheadings}{Responsible for engineering the planning, creation, and delivery workflows of Target promotions across off-platform channels.}
+\end{tightemize}
+\location{Key Takeaways: Event-Driven Architecture, Agentic Engineering, Observability}
+\vspace{4mm}
+
+\resumeHeading{Paytm}{Senior Software Engineer}{Remote}{October 2022 - June 2024}
+\begin{tightemize}
+% \item \textcolor{subheadings}{Worked on the central promotion technologies responsible for cashback \& discount programs for bank offers \& EMI flows.}
+\item \textcolor{subheadings}{Improved cache hit ratio from \textbf{50\% to 95\%} for campaigns by implementing a Aerospike based write-aside distributed cache along with API level cache-aside strategy, inherently resulting in reduced average latency.}
+\item \textcolor{subheadings}{Developed a user-based segmentation system, enabling targeted offers to drive revenue from specific customer segments; resulted in a \textbf{20\% increase} in up-selling, attracting new customers, and boosting overall platform footfall.}
+\item \textcolor{subheadings}{Achieved idempotency in campaign transactions by designing a new Cassandra schema resulting in zero budget breaches.}
+\item \textcolor{subheadings}{Reduced 3rd party API requests \textbf{tenfold} by strategically making bulk calls, saving effective cost \& improved latency of API calls.}
+\item \textcolor{subheadings}{Engineered support for cardless EMI offers through EDC transactions, extending offer capabilities to new payment flows.}
+\item \textcolor{subheadings}{Implemented SKU-level support for orders placed via payment gateway checkout, enabling offers to be applied at the item level.}
+\item \textcolor{subheadings}{Extended the promotions rule engine with Paytm Deals support, enabling Deals-specific promotional campaigns.}
+% \item \textcolor{subheadings}{Migrated PG related Apache Storm topologies from 1.x to 2.x cluster in production with \textbf{zero downtime} and zero lost updates.}
+\end{tightemize}
+\location{Key Takeaways: Microservices, No-SQL Databases, Stream Processing}
+\vspace{4mm}
+
+\resumeHeading{Teradata}{Software Engineer}{Hyderabad, India}{April 2021 - October 2022}
+\begin{tightemize}
+\item \textcolor{subheadings}{Implemented FIPS 140-2 compliant security enhancements for Teradata Viewpoint, enabling adoption by U.S. federal agencies.}
+\item \textcolor{subheadings}{Engineered a secure vault library for configuration credential management, mitigating \textbf{20+} security risks across the platform.}
+\item \textcolor{subheadings}{Designed and implemented TLS certificate expiry alerting system, reducing certificate-related security incidents by \textbf{40\%}.}
+\item \textcolor{subheadings}{Hackathon: Achieved \textbf{zero downtime} server upgrades by developing a prototype of upgrade service for Teradata Viewpoint.}
+% \item \textcolor{subheadings}{Fixed \textbf{10k+} Viewpoint service from zero day vulnerability of log4jshell by implementing \& releasing immediate patch.}
+\end{tightemize}
+\location{Key Takeaways: Monolithic Architecture, Restful Web-services, Security, X.509 Certificates}
+\vspace{4mm}
+
+\resumeHeading{Wipro}{Project Engineer}{Hyderabad, India}{July 2019 - April 2021}
+\begin{tightemize}
+\item \textcolor{subheadings}{Elevated the web platform’s Chrome Lighthouse score from \textbf{74 to 93} by implementing WCAG-compliant accessibility.}
+\item \textcolor{subheadings}{Built the UX-Next report renderer from scratch using React, Redux, \& Ag-Grid, expanding IBM TRIRIGA’s reporting capabilities.}
+\item \textcolor{subheadings}{Integrated React DevTools in development workflow, reducing debugging effort \& driving a \textbf{40\%} increase in team productivity.}
+\item \textcolor{subheadings}{Implemented an “In Range” operator in the backend filter engine, reducing the number of user search queries required by \textbf{50\%}.}
+\item \textcolor{subheadings}{Engineered web component for session alerts \& renewal across SSO \& non-SSO environments, reducing user session timeouts.}
+\end{tightemize}
+\location{Key Takeaways: Full-Stack Engineering, Web Components, W3C Accessibility}
+
+\sectionsep
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     EDUCATION & SKILLS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{minipage}[t]{0.5\textwidth} 
+
+\section{Education}
+\runsubsection{B.Tech}\descript{| Computer Science \& Engineering}
+% \subsection{Bachelor of Technology} 
+% \descript{Computer Science \& Engineering}
+\newline
+\location{\textbf{Dr. APJ Abdul Kalam Technical University}}
+\location{Lucknow, India | 2015 - 2019}
+\location{CGPA: 7.93/10.0}
+\sectionsep
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\textwidth} 
+
+\section{SKILLS}
+% \descript{Java • Kotlin • JVM • Spring Boot • Spring Data • MySQL • AWS • Elasticsearch • Apache Kafka • Apache Storm • Grafana • Prometheus • Loki}
+
+% \descript{Technologies:}\location{Java, Kotlin, JVM, Spring Boot, Spring Data, Apache Kafka, Apache Storm, AWS}
+% \descript{Databases:}\location{MySQL, PostgreSQL, Elasticsearch, Apache Cassandra}
+% \descript{Misc:}\location{Grafana, Linux}
+
+\descript{Languages:}\location{Java, Kotlin}
+\descript{Databases:}\location{Postgres, MySQL, Cassandra, Elasticsearch}
+\descript{Technologies:}\location{JVM, Spring Boot, JUnit5, Apache Kafka, Schema Registry, AWS, Docker, OAuth 2, Grafana, Maven, Gradle, Linux}
+
+% \cvsect{Java}
+% % \cvsect{JSP}  
+% \cvsect{Springboot}  
+% \cvsect{JPA} 
+% \cvsect{JVM}  
+% % \cvsect{Restful Webservices} 
+% \cvsect{RDBMS} 
+% % \cvsect{Databases} 
+% \cvsect{Kafka}  
+% \cvsect{AWS} 
+% \cvsect{Elasticsearch}
+% \cvsect{Apache Storm} 
+% % \cvsect{docker}
+% \cvsect{Grafana}
+% % \cvsect{Prometheus} 
+% % \cvsect{Maven} 
+% \cvsect{Linux} 
+\sectionsep
+
+\end{minipage} 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     PROJECTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \section{Projects}
+% \begin{minipage}[t]{0.5\textwidth} 
+% \runsubsection{\href{https://github.com/livesamarthgupta/Github-Downloader}{Github-Downloader \ExternalLink}}
+% \descript{| Java}
+% % \location{June, 2020}
+% % % \begin{tightemize}
+% % A command line tool that allows to download any GitHub directory structure onto any windows/macos/linux systems. This was implemented using Java network programming and Github's Restful APIs and the download performance was improved drastically using Java multi-threading.
+% % % \end{tightemize} 
+% \sectionsep
+% \end{minipage}
+% \begin{minipage}[t]{0.49\textwidth} 
+% \runsubsection{\href{https://github.com/livesamarthgupta/url-shortner}{URL-shortener \ExternalLink}}
+% \descript{| Go, React}
+
+% % \location{June, 2020}
+% % % \begin{tightemize}
+% % A web app made to be used team-wide for shortening URL of VM instances or customize the URL as per need basis. The UI of the app is built using react components, the restful APIs are developed using Golang and the data-store used is a dockerized instance of postgreSQL, programmed in Golang using pq library.
+% % % \end{tightemize} 
+
+% \sectionsep
+% \end{minipage}
+
+% \section{Projects}
+
+% \projectHeading{Github-Downloader}{https://github.com/livesamarthgupta/Github-Downloader}{Java, Concurrency, Object-Oriented Design}
+% A CLI tool that can download any GitHub directory. Implemented using Java network programming with Github's REST APIs \& the parallel download was implemented using Java multi-threading.\\
+% \sectionsep
+
+% \projectHeading{URL-shortener}{https://github.com/livesamarthgupta/url-shortner}{Golang, React, Javascript, Postgresql}
+% A web app for shortening URL. Built using React components, the backend is written in Golang w/ PostgreSQL DB.\\
+% \sectionsep
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     ACHIEVEMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Achievements}
+\vspace{\topsep}
+\begin{tightemize}
+\item \textcolor{subheadings}{{\bf Silver Medal:} Achieved 2nd place in Teradata Secure Coding Tourament by solving 24 security risks within 24Hrs.}
+\item \textcolor{subheadings}{{\bf Top Code Contributor:} Top 2nd \& 3rd code contributor for IBM-TRIRIGA in Q3-2020 \& Q4-2020 respectively.}
+\end{tightemize}
+\sectionsep
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     Certifications
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Certifications} 
+
+% \begin{minipage}[t]{0.49\textwidth} 
+% \runsubsection{SAFe 5 Practitioner} 
+% \descript{| Scaled Agile}
+% \location{June, 2021}
+% \href{https://www.credly.com/badges/263a2234-6bf2-4d80-bacb-522833061db5/public_url}{Credentials: \ExternalLink}
+% \sectionsep
+
+% \end{minipage}
+% \hfill
+% \begin{minipage}[t]{0.49\textwidth} 
+% \runsubsection{Java Intermediate} 
+% \descript{| Hackerrank}
+% \location{September, 2020}
+% \href{https://www.hackerrank.com/certificates/6272a6f64207}{Credentials: \ExternalLink}
+% \sectionsep
+% \end{minipage}
+% \hfill
+
+
+\end{document} 
