@@ -1,45 +1,70 @@
 # Local LaTeX Resume Development Workflow
 
-Local development workflow for editing and compiling the resume without depending on Overleaf.
+Local development and deployment workflow for editing, compiling, and publishing the resume without depending on Overleaf.
 
-The repository is already configured with the required LaTeX class, fonts, build configuration, Makefile, Git configuration, and VS Code configuration.
+The repository is configured so that the **LaTeX source is the source of truth**. The resume can be built locally for development, and GitHub Actions automatically builds and deploys the latest PDF to GitHub Pages whenever changes are pushed to `main`.
 
 ## Toolchain
 
 - **BasicTeX / TeX Live** — LaTeX distribution
 - **XeLaTeX** — compiler used by the resume
-- **latexmk** — build automation
+- **latexmk** — LaTeX build automation
+- **Make** — simple terminal build interface
 - **VS Code** — editor
 - **LaTeX Workshop** — VS Code LaTeX integration
+- **GitHub Actions** — CI/CD
+- **GitHub Pages** — production hosting
 
 ---
 
-## 1. Prerequisites
+## 1. Repository Structure
+
+```text
+resume/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── .vscode/
+│   └── settings.json
+├── fonts/
+│   ├── lato/
+│   └── raleway/
+├── resume.tex
+├── deedy-resume-openfont.cls
+├── Makefile
+├── .latexmkrc
+├── .gitignore
+├── index.html
+└── README.md
+```
+
+| File / Directory | Purpose |
+|---|---|
+| `resume.tex` | Resume source and content |
+| `deedy-resume-openfont.cls` | Resume document class and layout |
+| `fonts/` | Project-local Lato and Raleway fonts |
+| `.latexmkrc` | LaTeX build configuration |
+| `Makefile` | Local build commands |
+| `.vscode/settings.json` | VS Code / LaTeX Workshop configuration |
+| `.github/workflows/deploy.yml` | GitHub Actions CI/CD workflow |
+| `index.html` | GitHub Pages website |
+| `.gitignore` | Excludes generated files |
+
+`resume.pdf` and other LaTeX auxiliary files are generated artifacts and are not committed to Git.
+
+---
+
+## 2. Prerequisites
 
 This workflow assumes macOS.
 
-The required development tools are:
-
-- Homebrew
-- BasicTeX
-- `xelatex`
-- `latexmk`
-- VS Code
-- LaTeX Workshop
-
-If the repository is being set up on a new machine, install the tools as described below.
-
 ### Homebrew
-
-Verify Homebrew:
 
 ```bash
 brew --version
 ```
 
 ### BasicTeX
-
-Install BasicTeX:
 
 ```bash
 brew install --cask basictex
@@ -59,11 +84,7 @@ xelatex --version
 sudo tlmgr update --self
 ```
 
-### Required TeX Live packages
-
-The resume depends on the packages used by `resume.tex` and `deedy-resume-openfont.cls`.
-
-Install them with:
+### Required LaTeX packages
 
 ```bash
 sudo tlmgr install \
@@ -85,7 +106,7 @@ sudo tlmgr install \
   latexmk
 ```
 
-### Verify the tools
+### Verify
 
 ```bash
 xelatex --version
@@ -94,9 +115,7 @@ latexmk -v
 
 ---
 
-## 2. Clone the Repository
-
-Clone the repository into the development directory:
+## 3. Clone the Repository
 
 ```bash
 mkdir -p ~/Developer
@@ -113,9 +132,9 @@ cd ~/Developer/resume
 
 ---
 
-## 3. VS Code
+## 4. VS Code
 
-Install VS Code using Homebrew:
+Install VS Code:
 
 ```bash
 brew install --cask visual-studio-code
@@ -128,33 +147,19 @@ cd ~/Developer/resume
 code .
 ```
 
-If the `code` command is unavailable, enable it from VS Code:
+If `code` is unavailable, enable it from VS Code:
 
 **Command Palette → Shell Command: Install 'code' command in PATH**
 
-### LaTeX Workshop
+Install the **LaTeX Workshop** extension.
 
-Install the **LaTeX Workshop** extension in VS Code.
+It provides LaTeX syntax highlighting, automatic compilation, build diagnostics, PDF preview, SyncTeX, and forward/inverse search.
 
-It provides:
-
-- LaTeX syntax highlighting
-- Automatic compilation
-- Build diagnostics
-- PDF preview
-- SyncTeX
-- Forward and inverse search
+The repository already contains the required LaTeX Workshop configuration.
 
 ---
 
-## 4. Daily Development Workflow
-
-Open the repository:
-
-```bash
-cd ~/Developer/resume
-code .
-```
+## 5. Local Development Workflow
 
 Open:
 
@@ -162,15 +167,13 @@ Open:
 resume.tex
 ```
 
-Edit the resume and save with:
+Edit and save with:
 
 ```text
 Cmd + S
 ```
 
 LaTeX Workshop automatically builds the document.
-
-The development loop is:
 
 ```text
 Edit resume.tex
@@ -186,43 +189,171 @@ LaTeX Workshop
   resume.pdf
 ```
 
-The generated PDF can be viewed directly in VS Code.
-
 ---
 
-## 5. Terminal Workflow
+## 6. Terminal Workflow
 
-The resume can also be built without VS Code.
-
-### Build
+Build:
 
 ```bash
 make
 ```
 
-### Build and open the PDF
+Build and open the PDF:
 
 ```bash
 make open
 ```
 
-### Clean generated files
+Clean generated files:
 
 ```bash
 make clean
 ```
 
-### Clean and rebuild
+Clean and rebuild:
 
 ```bash
 make rebuild
 ```
 
-The terminal workflow is useful for verifying that the project builds independently of the editor.
+---
+
+## 7. Git Workflow
+
+Normal development:
+
+```text
+Edit
+  ↓
+Local build
+  ↓
+Review PDF
+  ↓
+git add
+  ↓
+git commit
+  ↓
+git push
+```
+
+Example:
+
+```bash
+git status
+git add resume.tex
+git commit -m "Update resume"
+git push origin main
+```
+
+Do not commit generated LaTeX artifacts or the generated PDF.
 
 ---
 
-## 6. Useful Commands
+## 8. GitHub Actions CI/CD
+
+GitHub Actions provides the automated production build and deployment pipeline.
+
+The workflow is defined in:
+
+```text
+.github/workflows/deploy.yml
+```
+
+It runs when changes are pushed to `main` and can also be manually triggered with `workflow_dispatch`.
+
+```text
+Local repository
+      │
+      │ git push origin main
+      ▼
+GitHub repository
+      │
+      ▼
+GitHub Actions
+      │
+      ├── Checkout source
+      ├── Build with XeLaTeX
+      ├── Generate resume.pdf
+      ├── Prepare website artifact
+      └── Deploy artifact
+             │
+             ▼
+       GitHub Pages
+```
+
+The production PDF is generated from the committed `resume.tex`; it does not need to be committed to the repository.
+
+---
+
+## 9. GitHub Pages
+
+GitHub Pages should use:
+
+```text
+Build and deployment
+        ↓
+Source
+        ↓
+GitHub Actions
+```
+
+The deployment workflow publishes the generated website artifact.
+
+`index.html` references the generated `resume.pdf`.
+
+Every successful deployment therefore publishes the PDF generated from the latest `main` branch.
+
+---
+
+## 10. End-to-End Deployment
+
+Edit the resume:
+
+```bash
+cd ~/Developer/resume
+code .
+```
+
+Build and review locally:
+
+```bash
+make open
+```
+
+Commit and push:
+
+```bash
+git add resume.tex
+git commit -m "Update resume"
+git push origin main
+```
+
+GitHub automatically performs:
+
+```text
+Edit
+  ↓
+Local build/review
+  ↓
+git push
+  ↓
+GitHub Actions
+  ↓
+XeLaTeX
+  ↓
+resume.pdf
+  ↓
+GitHub Pages
+  ↓
+Live website
+```
+
+There is no manual PDF upload or deployment step.
+
+---
+
+## 11. Useful Commands
 
 | Command | Purpose |
 |---|---|
@@ -231,58 +362,26 @@ The terminal workflow is useful for verifying that the project builds independen
 | `make open` | Build and open the PDF |
 | `make clean` | Remove generated LaTeX files |
 | `make rebuild` | Clean and rebuild |
-| `latexmk resume.tex` | Build using the repository configuration |
+| `latexmk resume.tex` | Build using project configuration |
 | `xelatex --version` | Show XeLaTeX version |
 | `latexmk -v` | Show latexmk version |
-| `git status` | Check repository changes |
-| `git diff` | Review source changes |
+| `git status` | Show working tree status |
+| `git diff` | Review changes |
+| `git log --oneline` | Review commit history |
+| `git push origin main` | Push changes and trigger deployment |
 
 ---
 
-## 7. Recommended Daily Workflow
+## 12. Troubleshooting
 
-For normal resume editing:
-
-```bash
-cd ~/Developer/resume
-code .
-```
-
-Then:
-
-1. Open `resume.tex`.
-2. Make the required changes.
-3. Save with `Cmd + S`.
-4. Review the automatically generated PDF.
-5. Repeat until the resume is finalized.
-6. Commit the source changes when ready.
-
-For a quick terminal build:
-
-```bash
-cd ~/Developer/resume
-make open
-```
-
----
-
-## 8. Troubleshooting
-
-### Build fails after changes
-
-Clean the generated files:
+### Local build fails
 
 ```bash
 make clean
-```
-
-Then rebuild:
-
-```bash
 make
 ```
 
-Or:
+or:
 
 ```bash
 make rebuild
@@ -304,8 +403,6 @@ latexmk -v
 
 ### Check a LaTeX package
 
-For example:
-
 ```bash
 kpsewhich graphicx.sty
 ```
@@ -316,74 +413,117 @@ or:
 kpsewhich substr.sty
 ```
 
----
+### GitHub Actions build fails
 
-## 9. Repository Structure
-
-The repository contains the source and development configuration required for the local workflow:
+Open:
 
 ```text
-resume/
-├── resume.tex
-├── deedy-resume-openfont.cls
-├── fonts/
-│   ├── lato/
-│   └── raleway/
-├── Makefile
-├── .latexmkrc
-├── .gitignore
-└── .vscode/
-    └── settings.json
+GitHub repository
+    → Actions
+    → Build and Deploy Resume
 ```
 
-Generated LaTeX files and `resume.pdf` are build artifacts and are excluded from version control.
+Inspect the failed workflow step and its build log.
+
+- **Local build failure** → fix the local LaTeX source/environment.
+- **GitHub Actions build failure** → inspect the CI build log.
+- **Deployment failure** → inspect the GitHub Pages/deployment job.
 
 ---
 
-## 10. Development Architecture
+## 13. Source and Generated Files
 
-The local development workflow is:
+### Source files
 
 ```text
-                         VS Code
-                            │
-                       resume.tex
-                            │
-                         Save
-                            │
-                            ▼
-                   LaTeX Workshop
-                            │
-                            ▼
-                         latexmk
-                            │
-                            ▼
-                         XeLaTeX
-                            │
-                  ┌─────────┴─────────┐
-                  │                   │
-                  ▼                   ▼
-          deedy-resume-openfont   Project fonts
-                  │                   │
-                  └─────────┬─────────┘
-                            ▼
-                       resume.pdf
+resume.tex
+deedy-resume-openfont.cls
+fonts/
+index.html
+Makefile
+.latexmkrc
+.gitignore
+.vscode/
+.github/
 ```
 
-The same build system can be invoked directly from the terminal using `make`.
+### Generated files
+
+```text
+resume.pdf
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+*.toc
+*.bcf
+*.run.xml
+```
+
+Generated files should not be committed.
 
 ---
 
-## 11. Source of Truth
+## 14. Development Architecture
 
-The primary source file is:
+```text
+                           Git Repository
+                                │
+                     ┌──────────┴──────────┐
+                     │                     │
+                     ▼                     ▼
+              Local Development      GitHub Actions
+                     │                     │
+                  VS Code              CI runner
+                     │                     │
+              LaTeX Workshop          TeX Live
+                     │                     │
+                  latexmk               XeLaTeX
+                     │                     │
+                  XeLaTeX                  │
+                     │                     │
+                     ▼                     ▼
+              Local resume.pdf   Production resume.pdf
+                                           │
+                                           ▼
+                                     GitHub Pages
+                                           │
+                                           ▼
+                                      Live website
+```
+
+---
+
+## 15. Final Daily Workflow
+
+```bash
+cd ~/Developer/resume
+code .
+```
+
+Edit:
 
 ```text
 resume.tex
 ```
 
-Resume content and formatting changes should be made in the repository rather than in generated files.
+Save and review the local PDF.
 
-The PDF should be treated as a build artifact generated from the source.
+When satisfied:
 
-The local repository is therefore the complete development environment for the resume.
+```bash
+git add .
+git commit -m "Update resume"
+git push origin main
+```
+
+GitHub Actions automatically:
+
+```text
+Build → Generate PDF → Package website → Deploy → GitHub Pages
+```
+
+The live website reflects the latest successfully deployed version of the LaTeX source on `main`.
