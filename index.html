@@ -1,16 +1,258 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Samarth Gupta - Resume</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Samarth Gupta — Senior Software Engineer</title>
+
+    <meta
+      name="description"
+      content="Samarth Gupta — Senior Software Engineer specializing in backend engineering, distributed systems, and JVM technologies."
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --background: #f7f7f5;
+        --surface: #ffffff;
+        --text: #171717;
+        --muted: #6b6b6b;
+        --border: #e5e5e5;
+        --accent: #171717;
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+
+        display: flex;
+        flex-direction: column;
+      }
+
+      main {
+        width: min(900px, calc(100% - 40px));
+        margin: auto;
+        padding: 80px 0;
+      }
+
+      .hero {
+        text-align: center;
+      }
+
+      .name {
+        font-size: clamp(42px, 7vw, 72px);
+        font-weight: 700;
+        letter-spacing: -0.055em;
+        line-height: 1;
+      }
+
+      .title {
+        margin-top: 18px;
+        font-size: 20px;
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      .specialization {
+        margin-top: 12px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+
+      .links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 22px;
+        margin-top: 28px;
+      }
+
+      .links a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        border-bottom: 1px solid transparent;
+      }
+
+      .links a:hover {
+        border-bottom-color: var(--text);
+      }
+
+      .resume-card {
+        margin-top: 70px;
+        padding: 48px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+      }
+
+      .card-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .card-title {
+        margin-top: 14px;
+        font-size: 30px;
+        letter-spacing: -0.03em;
+      }
+
+      .card-description {
+        max-width: 620px;
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 22px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition:
+          transform 0.15s ease,
+          opacity 0.15s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        opacity: 0.88;
+      }
+
+      .button-primary {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .button-secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      footer {
+        padding: 30px 20px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 600px) {
+        main {
+          width: min(100% - 28px, 900px);
+          padding: 50px 0;
+        }
+
+        .resume-card {
+          margin-top: 50px;
+          padding: 30px 24px;
+          border-radius: 16px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <h1>Samarth Gupta</h1>
+    <main>
+      <section class="hero">
+        <h1 class="name">Samarth Gupta</h1>
 
-    <p>
-      <a href="resume.pdf">Download Resume</a>
-    </p>
+        <p class="title">Senior Software Engineer</p>
 
-    <iframe src="resume.pdf" width="100%" height="1000px"> </iframe>
+        <p class="specialization">
+          Backend Engineering · Distributed Systems · JVM
+        </p>
+
+        <nav class="links" aria-label="Social links">
+          <a
+            href="https://www.linkedin.com/in/livesamarthgupta/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
+
+          <a href="mailto:livesamarthgupta@gmail.com"> Email </a>
+
+          <a
+            href="https://github.com/livesamarthgupta"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+
+          <a href="resume.pdf"> PDF </a>
+        </nav>
+      </section>
+
+      <section class="resume-card">
+        <p class="card-label">Curriculum Vitae</p>
+
+        <h2 class="card-title">Senior Software Engineer</h2>
+
+        <p class="card-description">
+          Backend engineer focused on building scalable systems, distributed
+          architectures, and reliable services across the JVM ecosystem.
+        </p>
+
+        <div class="actions">
+          <a
+            class="button button-primary"
+            href="resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Resume
+          </a>
+
+          <a
+            class="button button-secondary"
+            href="resume.pdf"
+            download="Samarth-Gupta-Resume.pdf"
+          >
+            Download PDF
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>© 2026 Samarth Gupta</footer>
   </body>
 </html>
