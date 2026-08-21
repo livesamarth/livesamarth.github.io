@@ -18,14 +18,16 @@
             ? saved
             : "dark";
 
-        document.documentElement.dataset.theme = theme;
+        const resolvedTheme =
+          theme === "daylight"
+            ? (() => {
+                const hour = new Date().getHours();
+                return hour >= 6 && hour < 18 ? "light" : "dark";
+              })()
+            : theme;
 
-        // Resolve daylight immediately without waiting for page rendering.
-        if (theme === "daylight") {
-          const hour = new Date().getHours();
-          document.documentElement.dataset.theme =
-            hour >= 6 && hour < 18 ? "light" : "dark";
-        }
+        document.documentElement.dataset.theme = resolvedTheme;
+        document.documentElement.dataset.themePreference = theme;
       })();
     </script>
 
@@ -45,6 +47,11 @@
         --accent-dim: oklch(0.55 0.13 145);
         --mono: "JetBrains Mono", ui-monospace, monospace;
         --display: "Doto", var(--mono);
+
+        --splash-bg: #000;
+        --splash-fg: #e6e6e6;
+        --splash-dim: #666;
+        --splash-faint: #303030;
       }
 
       html[data-theme="light"] {
@@ -58,6 +65,11 @@
         --faint: #85857f;
         --accent: oklch(0.52 0.17 145);
         --accent-dim: oklch(0.42 0.14 145);
+
+        --splash-bg: #f4f4f1;
+        --splash-fg: #171717;
+        --splash-dim: #6a6a65;
+        --splash-faint: #c8c8c3;
       }
 
       * {
@@ -117,6 +129,203 @@
         font: inherit;
       }
 
+      /* ============================================================
+         SPLASH SCREEN
+         ============================================================ */
+
+      body.splash-active {
+        overflow: hidden;
+      }
+
+      .splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: var(--splash-bg);
+        color: var(--splash-fg);
+        opacity: 1;
+        visibility: visible;
+        transition:
+          opacity 420ms ease,
+          visibility 420ms ease;
+      }
+
+      .splash.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .splash-terminal {
+        width: min(100%, 720px);
+      }
+
+      .splash-header {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        height: 32px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-bottom: 0;
+        background: var(--panel);
+      }
+
+      .terminal-dot {
+        width: 7px;
+        height: 7px;
+        border: 1px solid var(--splash-dim);
+        border-radius: 50%;
+      }
+
+      .terminal-title {
+        margin-left: 8px;
+        color: var(--splash-dim);
+        font-size: 10px;
+        letter-spacing: 0.02em;
+      }
+
+      .splash-body {
+        min-height: 310px;
+        padding: 22px 20px 20px;
+        border: 1px solid var(--border);
+        background: linear-gradient(
+          to bottom,
+          color-mix(in oklch, var(--splash-bg) 96%, var(--accent)),
+          var(--splash-bg)
+        );
+        box-shadow:
+          0 0 0 1px color-mix(in oklch, var(--accent) 5%, transparent),
+          0 20px 60px color-mix(in oklch, var(--accent) 5%, transparent);
+      }
+
+      .splash-prompt {
+        margin-bottom: 18px;
+        color: var(--accent);
+        font-size: 12px;
+      }
+
+      .splash-prompt span {
+        color: var(--splash-fg);
+      }
+
+      .splash-log {
+        min-height: 178px;
+        color: var(--splash-dim);
+        font-size: 12px;
+        line-height: 1.9;
+      }
+
+      .splash-line {
+        min-height: 23px;
+        white-space: pre-wrap;
+      }
+
+      .splash-line .ok {
+        color: var(--accent);
+      }
+
+      .splash-line .command {
+        color: var(--splash-fg);
+      }
+
+      .splash-line .muted {
+        color: var(--splash-faint);
+      }
+
+      .splash-cursor {
+        display: inline-block;
+        width: 7px;
+        height: 13px;
+        margin-left: 3px;
+        vertical-align: -2px;
+        background: var(--accent);
+        animation: splash-blink 800ms steps(1, end) infinite;
+      }
+
+      @keyframes splash-blink {
+        0%,
+        49% {
+          opacity: 1;
+        }
+
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .splash-progress {
+        height: 1px;
+        margin-top: 18px;
+        overflow: hidden;
+        background: var(--splash-faint);
+      }
+
+      .splash-progress-bar {
+        width: 0;
+        height: 100%;
+        background: var(--accent);
+        box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 45%, transparent);
+        transition: width 120ms linear;
+      }
+
+      .splash-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 10px;
+        color: var(--splash-faint);
+        font-size: 9px;
+        text-transform: lowercase;
+      }
+
+      .splash-status {
+        color: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        .splash {
+          padding: 12px;
+        }
+
+        .splash-body {
+          min-height: 330px;
+          padding: 18px 14px;
+        }
+
+        .splash-log {
+          font-size: 11px;
+        }
+
+        .splash-footer {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .splash-cursor {
+          animation: none;
+        }
+
+        .splash {
+          transition: none;
+        }
+
+        .splash-progress-bar {
+          transition: none;
+        }
+      }
+
+      /* ============================================================
+         SITE
+         ============================================================ */
+
       .site {
         width: min(100% - 32px, 960px);
         margin: auto;
@@ -153,6 +362,7 @@
         49% {
           opacity: 1;
         }
+
         50%,
         100% {
           opacity: 0;
@@ -535,7 +745,40 @@
     </style>
   </head>
 
-  <body>
+  <body class="splash-active">
+    <!-- ============================================================
+         TERMINAL SPLASH SCREEN
+         ============================================================ -->
+
+    <div class="splash" id="splash" aria-hidden="true">
+      <div class="splash-terminal">
+        <div class="splash-header">
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-title">samarth@portfolio ~</span>
+        </div>
+
+        <div class="splash-body">
+          <div class="splash-prompt">
+            samarth@portfolio:~ $ <span>./initialize</span
+            ><span class="splash-cursor"></span>
+          </div>
+
+          <div class="splash-log" id="splash-log"></div>
+
+          <div class="splash-progress">
+            <div class="splash-progress-bar" id="splash-progress"></div>
+          </div>
+
+          <div class="splash-footer">
+            <span id="splash-mode">theme: dark</span>
+            <span class="splash-status">system ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="site">
       <header class="topbar">
         <a class="brand" href="./">
@@ -585,6 +828,7 @@
             >
               linkedin <span class="arrow">↗</span>
             </a>
+
             <a
               class="btn"
               href="https://github.com/livesamarth"
@@ -593,6 +837,7 @@
             >
               github <span class="arrow">↗</span>
             </a>
+
             <a
               class="btn"
               href="https://x.com/livesamarth"
@@ -609,11 +854,15 @@
             <h2>profile</h2>
             <span class="section-number">01</span>
           </div>
+
           <div class="panel ticks">
             <div class="panel-header">
-              <span>$ ./about<span class="caret" aria-hidden="true"></span></span>
+              <span
+                >$ ./about<span class="caret" aria-hidden="true"></span
+              ></span>
               <span>senior-engineer</span>
             </div>
+
             <div class="panel-body">
               <p class="profile">
                 Senior Software Engineer with 7+ years of experience building
@@ -632,9 +881,12 @@
             <h2>experience</h2>
             <span class="section-number">02</span>
           </div>
+
           <div class="panel">
             <div class="panel-header">
-              <span>$ ./companies<span class="caret" aria-hidden="true"></span></span>
+              <span
+                >$ ./companies<span class="caret" aria-hidden="true"></span
+              ></span>
               <span>7+ Years</span>
             </div>
 
@@ -643,7 +895,11 @@
                 <h3>target</h3>
                 <div class="role">senior engineer</div>
               </div>
-              <div class="date">jun 2024 — present<br />bengaluru, india</div>
+
+              <div class="date">
+                jun 2024 — present<br />
+                bengaluru, india
+              </div>
             </article>
 
             <article class="experience">
@@ -651,7 +907,11 @@
                 <h3>paytm</h3>
                 <div class="role">senior software engineer</div>
               </div>
-              <div class="date">oct 2022 — jun 2024<br />remote</div>
+
+              <div class="date">
+                oct 2022 — jun 2024<br />
+                remote
+              </div>
             </article>
 
             <article class="experience">
@@ -659,7 +919,11 @@
                 <h3>teradata</h3>
                 <div class="role">associate software engineer</div>
               </div>
-              <div class="date">apr 2021 — oct 2022<br />hyderabad, india</div>
+
+              <div class="date">
+                apr 2021 — oct 2022<br />
+                hyderabad, india
+              </div>
             </article>
 
             <article class="experience">
@@ -667,7 +931,11 @@
                 <h3>wipro</h3>
                 <div class="role">project engineer</div>
               </div>
-              <div class="date">jul 2019 — apr 2021<br />hyderabad, india</div>
+
+              <div class="date">
+                jul 2019 — apr 2021<br />
+                hyderabad, india
+              </div>
             </article>
           </div>
         </section>
@@ -677,14 +945,19 @@
             <h2>stack</h2>
             <span class="section-number">03</span>
           </div>
+
           <div class="panel">
             <div class="panel-header">
-              <span>$ ./technologies<span class="caret" aria-hidden="true"></span></span>
+              <span
+                >$ ./technologies<span class="caret" aria-hidden="true"></span
+              ></span>
               <span>backend-first</span>
             </div>
+
             <div class="panel-body">
               <div style="margin-bottom: 18px">
                 <div class="role" style="margin-bottom: 9px">programming</div>
+
                 <div class="stack">
                   <span class="tag">Java</span>
                   <span class="tag">Kotlin</span>
@@ -693,6 +966,7 @@
 
               <div style="margin-bottom: 18px">
                 <div class="role" style="margin-bottom: 9px">databases</div>
+
                 <div class="stack">
                   <span class="tag">PostgreSQL</span>
                   <span class="tag">MySQL</span>
@@ -703,6 +977,7 @@
 
               <div>
                 <div class="role" style="margin-bottom: 9px">technologies</div>
+
                 <div class="stack">
                   <span class="tag">JVM</span>
                   <span class="tag">Spring Boot</span>
@@ -729,20 +1004,26 @@
             <h2>curriculum vitae</h2>
             <span class="section-number">04</span>
           </div>
+
           <div class="panel">
             <div class="panel-header">
-              <span>$ ./resume<span class="caret" aria-hidden="true"></span></span>
+              <span
+                >$ ./resume<span class="caret" aria-hidden="true"></span
+              ></span>
               <span>latest version</span>
             </div>
+
             <div class="panel-body">
               <div class="resume-row">
                 <div>
                   <div class="resume-file">samarth-gupta-resume.pdf</div>
+
                   <div class="resume-meta">
                     generated from the latex source · updated automatically on
                     deployment
                   </div>
                 </div>
+
                 <div class="actions" style="margin-top: 0">
                   <a
                     class="btn"
@@ -752,6 +1033,7 @@
                   >
                     view <span class="arrow">↗</span>
                   </a>
+
                   <a
                     class="btn"
                     href="resume.pdf"
@@ -770,42 +1052,51 @@
             <h2>contact</h2>
             <span class="section-number">05</span>
           </div>
+
           <div class="panel">
             <div class="panel-header">
-              <span>$ ./social<span class="caret" aria-hidden="true"></span></span>
+              <span
+                >$ ./social<span class="caret" aria-hidden="true"></span
+              ></span>
+
               <span><span class="status"></span>available</span>
             </div>
+
             <div class="panel-body">
               <p class="contact-line">
                 say hello at
                 <a href="mailto:livesamarthgupta@gmail.com" class="inline-link">
-                  livesamarthgupta@gmail.com
+                  livesamarth@gmail.com
                 </a>
               </p>
+
               <p class="contact-line" style="margin-top: 12px">
                 <a
                   class="inline-link"
                   href="https://www.linkedin.com/in/livesamarth"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >linkedin</a
                 >
+                  linkedin
+                </a>
                 ·
                 <a
                   class="inline-link"
                   href="https://github.com/livesamarth"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >github</a
                 >
+                  github
+                </a>
                 ·
                 <a
                   class="inline-link"
                   href="https://x.com/livesamarth"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >twitter(x)</a
                 >
+                  twitter(x)
+                </a>
               </p>
             </div>
           </div>
@@ -819,6 +1110,130 @@
     </div>
 
     <script>
+      /* ============================================================
+         TERMINAL SPLASH
+         ============================================================ */
+
+      const splash = document.getElementById("splash");
+      const splashLog = document.getElementById("splash-log");
+      const splashProgress = document.getElementById("splash-progress");
+      const splashMode = document.getElementById("splash-mode");
+
+      const themePreference =
+        document.documentElement.dataset.themePreference || "dark";
+
+      const resolvedTheme = document.documentElement.dataset.theme || "dark";
+
+      splashMode.textContent =
+        themePreference === "daylight"
+          ? `theme: daylight → ${resolvedTheme}`
+          : `theme: ${resolvedTheme}`;
+
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      const bootSequence = [
+        {
+          text: "initializing portfolio kernel...",
+          delay: 220,
+          progress: 12,
+        },
+        {
+          text: "loading identity module...",
+          delay: 240,
+          progress: 27,
+        },
+        {
+          text: "loading engineering profile...",
+          delay: 260,
+          progress: 43,
+        },
+        {
+          text: "mounting updated resume...",
+          delay: 260,
+          progress: 58,
+        },
+        {
+          text: "checking backend services...",
+          delay: 240,
+          progress: 71,
+        },
+        {
+          text: "resolving theme configuration...",
+          delay: 220,
+          progress: 84,
+        },
+        {
+          text: "establishing connection...",
+          delay: 240,
+          progress: 94,
+        },
+        {
+          text: "access granted.",
+          delay: 360,
+          progress: 100,
+          success: true,
+        },
+      ];
+
+      function addSplashLine(sequence) {
+        const line = document.createElement("div");
+        line.className = "splash-line";
+
+        if (sequence.success) {
+          line.innerHTML = `<span class="ok">✓</span> ${sequence.text}`;
+        } else {
+          line.innerHTML = `<span class="muted">[....]</span> ${sequence.text}`;
+        }
+
+        splashLog.appendChild(line);
+        splashProgress.style.width = `${sequence.progress}%`;
+      }
+
+      function finishSplash() {
+        splashProgress.style.width = "100%";
+
+        setTimeout(() => {
+          splash.classList.add("hidden");
+          document.body.classList.remove("splash-active");
+
+          setTimeout(() => {
+            splash.remove();
+          }, 450);
+        }, 1500);
+      }
+
+      async function runSplash() {
+        if (prefersReducedMotion) {
+          splashProgress.style.width = "100%";
+
+          bootSequence.forEach((sequence) => {
+            addSplashLine(sequence);
+          });
+
+          finishSplash();
+          return;
+        }
+
+        for (const sequence of bootSequence) {
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              addSplashLine(sequence);
+              resolve();
+            }, sequence.delay);
+          });
+        }
+
+        finishSplash();
+      }
+
+      runSplash();
+
+      /* ============================================================
+         THEME SWITCHER
+         ============================================================ */
+
       const themeToggle = document.getElementById("theme-toggle");
       const themeIcon = document.getElementById("theme-icon");
       const themeLabel = document.getElementById("theme-label");
@@ -876,12 +1291,16 @@
 
       function applyDaylightTheme() {
         const resolvedTheme = getDaylightTheme();
+
         document.documentElement.dataset.theme = resolvedTheme;
+        document.documentElement.dataset.themePreference = "daylight";
+
         updateThemeToggle("daylight");
       }
 
       function setTheme(theme) {
         localStorage.setItem("theme", theme);
+        document.documentElement.dataset.themePreference = theme;
 
         if (theme === "daylight") {
           applyDaylightTheme();
@@ -897,6 +1316,7 @@
         applyDaylightTheme();
       } else {
         document.documentElement.dataset.theme = currentTheme;
+        document.documentElement.dataset.themePreference = currentTheme;
         updateThemeToggle(currentTheme);
       }
 
