@@ -176,10 +176,26 @@
       }
 
       .terminal-dot {
-        width: 7px;
-        height: 7px;
-        border: 1px solid var(--splash-dim);
+        width: 12px;
+        height: 12px;
+        border: 1px solid transparent;
         border-radius: 50%;
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.2);
+      }
+
+      .terminal-dot--close {
+        border-color: #e0443e;
+        background: #ff5f57;
+      }
+
+      .terminal-dot--minimize {
+        border-color: #dea123;
+        background: #febc2e;
+      }
+
+      .terminal-dot--maximize {
+        border-color: #1aab29;
+        background: #28c840;
       }
 
       .terminal-title {
@@ -753,9 +769,9 @@
     <div class="splash" id="splash" aria-hidden="true">
       <div class="splash-terminal">
         <div class="splash-header">
-          <span class="terminal-dot"></span>
-          <span class="terminal-dot"></span>
-          <span class="terminal-dot"></span>
+          <span class="terminal-dot terminal-dot--close"></span>
+          <span class="terminal-dot terminal-dot--minimize"></span>
+          <span class="terminal-dot terminal-dot--maximize"></span>
           <span class="terminal-title">samarthgupta@web ~</span>
         </div>
 
